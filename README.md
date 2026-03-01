@@ -1,5 +1,5 @@
 # 3D Printer Maintenance Log
-It's a simple Maintenance Log sheet writen in HTML/CSS/PHP and using `json` file for saving data, `json` file can be exported and imported if needed from GUI interface. Project is based on BambuLab P2S printer and can miss some of maintenance that is used on other brands of 3D printers.
+It's a simple Maintenance Log sheet writen in HTML/CSS/PHP and supported by AI, using `json` file for saving data, `json` file can be exported and imported if needed from GUI interface. Project is based on BambuLab P2S printer and can miss some of maintenance that is used on other brands of 3D printers.
 
 ## Languages support
 - English
