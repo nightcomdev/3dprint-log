@@ -9,11 +9,11 @@ You can create your own language by creating `json` file and adding line to `ind
 
 1. Copy `lang_en.json` and rename it to `lang_ru.json`
 2. Translate what is needed to Russian language
-   ```
+```
    "subhead": "Комплексный журнал обслуживания 3D-принтеров",
     "printerLabel": "🖨️ Название принтера",
     "hoursLabel": "⏱️ Часы (время печати)",
-   ```
+```
 4. Edit file `index.html` and find line
 ```
    <select class="lang-select" id="langSelect">
