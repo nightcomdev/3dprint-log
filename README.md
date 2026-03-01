@@ -21,8 +21,14 @@ You can create your own language by creating `json` file and adding line to `ind
     <option value="pl">Polski 🇵🇱</option>
     </select>
 ```    
-6. Add ```<option value="ru">Русский 🇷🇺</option>``` before ```</select>```
-
+6. Add ```<option value="ru">Русский 🇷🇺</option>``` before ```</select>``` like this:
+```
+   <select class="lang-select" id="langSelect">
+    <option value="en">English 🇬🇧</option>
+    <option value="pl">Polski 🇵🇱</option>
+    <option value="ru">Русский 🇷🇺</option>
+   </select>
+```
 ## Images of Main Page and separate history log.
 ![Screenshot of a main page](/images/sc1.png)
 
