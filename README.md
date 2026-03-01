@@ -29,6 +29,11 @@ You can create your own language by creating `json` file and adding line to `ind
     <option value="ru">Русский 🇷🇺</option>
    </select>
 ```
+
+## Requirements
+- Server WWW Apache/Nginx etc.
+- PHP installed
+
 ## Images of Main Page and separate history log.
 ![Screenshot of a main page](/images/sc1.png)
 
