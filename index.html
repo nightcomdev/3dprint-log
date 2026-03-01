@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Printer Maintenance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1e2b3c 0%, #0f1a26 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 2.5rem;
+            padding: 2rem 2rem 2.5rem;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.08);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-size: 2.3rem;
+            font-weight: 500;
+            letter-spacing: -0.5px;
+            color: #f0f6fc;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 6px solid #00c8b0;
+            padding-left: 1.4rem;
+        }
+
+        .top-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .lang-select {
+            background: #1e2e3f;
+            padding: 0.4rem 1rem;
+            border-radius: 60px;
+            border: 1px solid #2a3f54;
+            color: #f0f6fc;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            min-width: 120px;
+        }
+
+        .lang-select:hover {
+            border-color: #00c8b0;
+        }
+
+        .lang-select option {
+            background: #1e2e3f;
+            color: #f0f6fc;
+        }
+
+        .icon-btn {
+            background: #1e2e3f;
+            border: 1px solid #2a3f54;
+            color: #f0f6fc;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: #00c8b0;
+            color: #0a1a26;
+            border-color: #00c8b0;
+            transform: scale(1.05);
+        }
+
+        .icon-btn.export:hover {
+            background: #00c8b0;
+        }
+
+        .icon-btn.import:hover {
+            background: #ffaa33;
+            border-color: #ffaa33;
+        }
+
+        .subhead {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #9bb7d4;
+            margin-bottom: 2.2rem;
+            margin-top: 0.25rem;
+            padding-left: 2rem;
+            opacity: 0.9;
+            min-height: 1.5rem;
+        }
+
+        .form-card {
+            background: #1e2e3f;
+            border-radius: 2rem;
+            padding: 1.8rem 2rem;
+            border: 1px solid #2a3f54;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6), 0 8px 18px rgba(0,0,0,0.5);
+        }
+
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            align-items: flex-end;
+        }
+
+        .input-group {
+            flex: 1 1 200px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: #7c9ec0;
+            margin-bottom: 0.4rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: #0d1a24;
+            border: 2px solid #2d425b;
+            border-radius: 40px;
+            padding: 0.9rem 1.5rem;
+            font-size: 1.1rem;
+            color: #eef5fb;
+            outline: none;
+            transition: all 0.2s;
+            font-weight: 400;
+        }
+
+        .input-group input:focus {
+            border-color: #00c8b0;
+            background: #0b1a25;
+            box-shadow: 0 0 0 4px rgba(0, 200, 176, 0.2);
+        }
+
+        .input-group input::placeholder {
+            color: #3e5770;
+            font-weight: 300;
+            font-size: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #d3e5f7;
+            margin: 1.5rem 0 1rem 0;
+            padding-left: 0.5rem;
+            border-left: 4px solid #00c8b0;
+            padding-left: 1rem;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin: 1rem 0 1.5rem 0;
+            background: #162633;
+            padding: 1.8rem 2rem;
+            border-radius: 2rem;
+            border: 1px solid #2d4a63;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #1e3142;
+            padding: 0.8rem 1.2rem;
+            border-radius: 50px;
+            border: 1px solid #344e69;
+            transition: all 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background: #233a4f;
+            border-color: #4d7094;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            min-width: 26px;
+            height: 26px;
+            background: #0b1923;
+            border: 2px solid #3e5e7c;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked {
+            background: #00c8b0;
+            border-color: #00c8b0;
+            box-shadow: 0 0 0 3px rgba(0, 200, 176, 0.25);
+        }
+
+        .checkbox-item input[type="checkbox"]:checked::after {
+            content: "✔";
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #0b1a2a;
+        }
+
+        .checkbox-item label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #d3e5f7;
+            cursor: pointer;
+            letter-spacing: -0.2px;
+            user-select: none;
+            flex: 1;
+        }
+
+        .checkbox-item label span {
+            font-size: 0.8rem;
+            color: #8aadcc;
+            display: block;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        .notes-section {
+            margin: 1.5rem 0 2rem 0;
+            background: #162633;
+            padding: 1.8rem 2rem;
+            border-radius: 2rem;
+            border: 1px solid #2d4a63;
+        }
+
+        .notes-section label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #d3e5f7;
+            margin-bottom: 1rem;
+        }
+
+        .notes-section textarea {
+            width: 100%;
+            background: #0d1a24;
+            border: 2px solid #2d425b;
+            border-radius: 40px;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            color: #eef5fb;
+            outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .notes-section textarea:focus {
+            border-color: #00c8b0;
+            background: #0b1a25;
+            box-shadow: 0 0 0 4px rgba(0, 200, 176, 0.2);
+        }
+
+        .notes-section textarea::placeholder {
+            color: #3e5770;
+            font-weight: 300;
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #7c9ec0;
+            margin-top: 0.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .char-counter.warning {
+            color: #ffaa33;
+        }
+
+        .char-counter.danger {
+            color: #ff6b6b;
+        }
+
+        .btn-panel {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1.2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            padding: 0.9rem 2.2rem;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background: #00c8b0;
+            color: #0a1a26;
+            box-shadow: 0 10px 20px -8px #00c8b0;
+            font-weight: 700;
+        }
+
+        .btn-primary:hover {
+            background: #00e0c6;
+            transform: scale(1.02);
+            box-shadow: 0 14px 24px -6px #00c8b0;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #3f5f7e;
+            color: #c9deef;
+        }
+
+        .btn-secondary:hover {
+            background: #263d54;
+            border-color: #5f82a8;
+        }
+
+        .btn-warning {
+            background: transparent;
+            border: 2px solid #c04e4e;
+            color: #ff8a8a;
+        }
+
+        .btn-warning:hover {
+            background: #4e2c2c;
+            border-color: #ff6b6b;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin: 2.2rem 0 1rem 0;
+            color: #aac3db;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .history-header h2 {
+            font-weight: 400;
+            font-size: 1.5rem;
+            color: #e3ecf5;
+        }
+
+        .table-wrapper {
+            background: #14212e;
+            border-radius: 2rem;
+            padding: 0.1rem 0 1rem 0;
+            border: 1px solid #2f445b;
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+            transition: all 0.3s;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #dbe9f5;
+            min-width: 1400px;
+        }
+
+        th {
+            text-align: left;
+            padding: 1.3rem 1rem 0.8rem 1.5rem;
+            font-weight: 500;
+            color: #8db1d0;
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid #304a60;
+            position: sticky;
+            top: 0;
+            background: #14212e;
+            z-index: 10;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        th:hover {
+            background: #1e3142;
+            color: #00c8b0;
+        }
+
+        th .sort-icon {
+            margin-left: 5px;
+            font-size: 0.8rem;
+            display: inline-block;
+            opacity: 0.5;
+        }
+
+        th:hover .sort-icon {
+            opacity: 1;
+        }
+
+        td {
+            padding: 1rem 1rem 1rem 1.5rem;
+            border-bottom: 1px solid #253a4d;
+            font-size: 0.95rem;
+        }
+
+        tr {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        tr:hover {
+            background: #1e3142;
+        }
+
+        td:last-child {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            background: #1e3d4a;
+            color: #8dd0cb;
+            padding: 0.3rem 0.9rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            border: 1px solid #398078;
+            white-space: nowrap;
+        }
+
+        .badge-z {
+            background: #3e3a5f;
+            color: #c5c0f0;
+            border-color: #7068b0;
+        }
+
+        .badge-purple {
+            background: #4a365f;
+            color: #d4b5ff;
+            border-color: #8a6ab0;
+        }
+
+        .badge-orange {
+            background: #5f483a;
+            color: #ffc9a0;
+            border-color: #b08a6a;
+        }
+
+        .badge-blue {
+            background: #2a4f5f;
+            color: #a0e0ff;
+            border-color: #5a9fb0;
+        }
+
+        .badge-green {
+            background: #1e4a3d;
+            color: #8dd0b0;
+            border-color: #398068;
+        }
+
+        .empty-row td {
+            padding: 2rem;
+            text-align: center;
+            color: #5f7e9c;
+            font-style: italic;
+        }
+
+        .footer-note {
+            margin-top: 1.2rem;
+            text-align: right;
+            font-size: 0.85rem;
+            color: #45627c;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #00c8b0;
+            color: #0a1a26;
+            padding: 1rem 2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+
+        .notification.error {
+            background: #c04e4e;
+            color: white;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #ff8a8a;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.3rem 0.6rem;
+            border-radius: 30px;
+            transition: all 0.2s;
+            margin: 0 2px;
+        }
+
+        .action-btn.edit {
+            color: #8db1d0;
+        }
+
+        .action-btn.edit:hover {
+            background: #1e3d4a;
+            color: #00c8b0;
+        }
+
+        .action-btn.delete:hover {
+            background: #4e2c2c;
+            color: #ff6b6b;
+        }
+
+        .hidden-file-input {
+            display: none;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1e2e3f;
+            border-radius: 2.5rem;
+            padding: 2.5rem;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #2a3f54;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: #9bb7d4;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #c04e4e;
+            color: white;
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            color: #f0f6fc;
+            margin-bottom: 2rem;
+            padding-right: 2rem;
+            border-left: 6px solid #00c8b0;
+            padding-left: 1.4rem;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-item {
+            background: #162633;
+            padding: 1rem 1.2rem;
+            border-radius: 1.2rem;
+            border: 1px solid #2d4a63;
+            transition: all 0.2s;
+        }
+
+        .detail-item.edit-mode {
+            background: #1e3d4a;
+            border-color: #00c8b0;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: #7c9ec0;
+            margin-bottom: 0.3rem;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: #f0f6fc;
+            font-weight: 500;
+        }
+
+        .detail-value.notes {
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #0d1a24;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            border: 1px solid #2d425b;
+        }
+
+        .detail-full {
+            grid-column: span 3;
+        }
+
+        .detail-input {
+            width: 100%;
+            background: #0d1a24;
+            border: 2px solid #2d425b;
+            border-radius: 40px;
+            padding: 0.6rem 1rem;
+            font-size: 0.95rem;
+            color: #eef5fb;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .detail-input:focus {
+            border-color: #00c8b0;
+            background: #0b1a25;
+            box-shadow: 0 0 0 4px rgba(0, 200, 176, 0.2);
+        }
+
+        .detail-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-checkbox input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #0b1923;
+            border: 2px solid #3e5e7c;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .detail-checkbox input[type="checkbox"]:checked {
+            background: #00c8b0;
+            border-color: #00c8b0;
+            box-shadow: 0 0 0 3px rgba(0, 200, 176, 0.25);
+        }
+
+        .detail-checkbox input[type="checkbox"]:checked::after {
+            content: "✔";
+            font-size: 1rem;
+            font-weight: bold;
+            color: #0b1a2a;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            border: none;
+            font-weight: 600;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 2px solid transparent;
+        }
+
+        .modal-btn.save {
+            background: #00c8b0;
+            color: #0a1a26;
+        }
+
+        .modal-btn.save:hover {
+            background: #00e0c6;
+            transform: scale(1.02);
+        }
+
+        .modal-btn.cancel {
+            background: transparent;
+            border: 2px solid #3f5f7e;
+            color: #c9deef;
+        }
+
+        .modal-btn.cancel:hover {
+            background: #263d54;
+        }
+
+        .modal-btn.edit {
+            background: #8db1d0;
+            color: #0a1a26;
+        }
+
+        .modal-btn.edit:hover {
+            background: #a0c0e0;
+            transform: scale(1.02);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.3rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .status-badge.success {
+            background: #1e3d4a;
+            color: #8dd0cb;
+            border: 1px solid #398078;
+        }
+
+        .status-badge.warning {
+            background: #5f483a;
+            color: #ffc9a0;
+            border: 1px solid #b08a6a;
+        }
+
+        @media (max-width: 700px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+            .detail-full {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-top">
+            <h1>🔧 3D Printer Maintenance</h1>
+            <div class="top-controls">
+                <button class="icon-btn export" id="exportBtn" title="Export to JSON">💾</button>
+                <button class="icon-btn import" id="importBtn" title="Import from JSON">📂</button>
+                <select class="lang-select" id="langSelect">
+                    <option value="en">English 🇬🇧</option>
+                    <option value="pl">Polski 🇵🇱</option>
+                </select>
+            </div>
+        </div>
+        <div class="subhead" id="subhead-text">Comprehensive 3D printers maintenance log</div>
+
+        <input type="file" id="fileInput" class="hidden-file-input" accept=".json">
+
+        <div class="form-card">
+            <div class="input-row">
+                <div class="input-group">
+                    <label id="printer-label">🖨️ Printer name</label>
+                    <input type="text" id="printerName" placeholder="e.g., Bambu P2S #1" value="">
+                </div>
+                <div class="input-group">
+                    <label id="hours-label">⏱️ Hours (print time)</label>
+                    <input type="number" id="hoursCount" placeholder="e.g., 245" min="0" step="1" value="">
+                </div>
+            </div>
+
+            <!-- Sekcja 1: Konserwacja -->
+            <div class="section-title" id="maintenance-title">🔧 Maintenance</div>
+            <div class="checkbox-grid">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="lubeXY">
+                    <label for="lubeXY" id="xy-label">⚙️ X/Y Lubrication <span id="xy-desc">linear axes</span></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="lubeZ">
+                    <label for="lubeZ" id="z-label">🔼 Z Lubrication <span id="z-desc">screws/rails</span></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="extruderClean">
+                    <label for="extruderClean" id="extruder-label">🧹 Extruder Cleaning <span id="extruder-desc">clean extruder gears</span></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="filterChange">
+                    <label for="filterChange" id="filter-label">🔄 Filter Replacement <span id="filter-desc">HEPA/carbon filter</span></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="fanClean">
+                    <label for="fanClean" id="fan-label">🌬️ Fans Cleaning <span id="fan-desc">part cooling & aux</span></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cutterChange">
+                    <label for="cutterChange" id="cutter-label">✂️ Toolhead Cutter <span id="cutter-desc">filament cutter blade</span></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="wiperPad">
+                    <label for="wiperPad" id="wiper-label">🧽 Nozzle Wiping Pad <span id="wiper-desc">replace silicone pad</span></label>
+                </div>
+            </div>
+
+            <!-- Sekcja 2: Kalibracja -->
+            <div class="section-title" id="calibration-title">⚙️ Calibration</div>
+            <div class="checkbox-grid">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="motorNoise">
+                    <label for="motorNoise" id="motor-label">🔇 Motor Noise Cancellation <span id="motor-desc">reduce motor noise</span></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="vibrationComp">
+                    <label for="vibrationComp" id="vibration-label">📳 Vibration Compensation <span id="vibration-desc">input shaping</span></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="autoBedLevel">
+                    <label for="autoBedLevel" id="abl-label">📏 Auto Bed Leveling <span id="abl-desc">mesh leveling</span></label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="highTempBed">
+                    <label for="highTempBed" id="hightemp-label">🔥 High-Temperature Bed Leveling <span id="hightemp-desc">for high temp printing</span></label>
+                </div>
+            </div>
+
+            <!-- Sekcja 3: Notes -->
+            <div class="notes-section">
+                <label id="notes-label">📝 Notes (max 500 characters)</label>
+                <textarea id="notes" placeholder="e.g., Additional observations, issues, next steps..." maxlength="500"></textarea>
+                <div class="char-counter" id="charCounter">0/500</div>
+            </div>
+
+            <div class="btn-panel">
+                <button class="btn btn-secondary" id="clearBtn">✕ <span id="clear-text">Clear fields</span></button>
+                <button class="btn btn-primary" id="addEntryBtn">➕ <span id="add-text">Add entry</span></button>
+            </div>
+        </div>
+
+        <div class="history-header">
+            <h2 id="history-title">📋 Maintenance history</h2>
+            <button class="btn-warning" id="clearHistoryBtn"><span id="clear-history-text">clear all history</span></button>
+        </div>
+
+        <div class="table-wrapper">
+            <table id="historyTable">
+                <thead>
+                    <tr>
+                        <th id="th-printer" onclick="sortTable('printerName')">Printer <span class="sort-icon" id="sort-printerName">↕️</span></th>
+                        <th id="th-date" onclick="sortTable('date')">Date <span class="sort-icon" id="sort-date">↕️</span></th>
+                        <th id="th-hours" onclick="sortTable('hours')">Hours <span class="sort-icon" id="sort-hours">↕️</span></th>
+                        <th id="th-xy" onclick="sortTable('xy')">X/Y <span class="sort-icon" id="sort-xy">↕️</span></th>
+                        <th id="th-z" onclick="sortTable('z')">Z <span class="sort-icon" id="sort-z">↕️</span></th>
+                        <th id="th-extruder" onclick="sortTable('extruder')">Extruder <span class="sort-icon" id="sort-extruder">↕️</span></th>
+                        <th id="th-filter" onclick="sortTable('filter')">Filter <span class="sort-icon" id="sort-filter">↕️</span></th>
+                        <th id="th-fan" onclick="sortTable('fan')">Fans <span class="sort-icon" id="sort-fan">↕️</span></th>
+                        <th id="th-cutter" onclick="sortTable('cutter')">Cutter <span class="sort-icon" id="sort-cutter">↕️</span></th>
+                        <th id="th-wiper" onclick="sortTable('wiper')">Wiper <span class="sort-icon" id="sort-wiper">↕️</span></th>
+                        <th id="th-motor" onclick="sortTable('motorNoise')">Motor <span class="sort-icon" id="sort-motorNoise">↕️</span></th>
+                        <th id="th-vibration" onclick="sortTable('vibrationComp')">Vibration <span class="sort-icon" id="sort-vibrationComp">↕️</span></th>
+                        <th id="th-abl" onclick="sortTable('autoBedLevel')">ABL <span class="sort-icon" id="sort-autoBedLevel">↕️</span></th>
+                        <th id="th-hightemp" onclick="sortTable('highTempBed')">High-Temp <span class="sort-icon" id="sort-highTempBed">↕️</span></th>
+                        <th id="th-notes" onclick="sortTable('notes')">Notes <span class="sort-icon" id="sort-notes">↕️</span></th>
+                        <th id="th-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="historyBody">
+                    <tr class="empty-row"><td colspan="16">Loading data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="footer-note">
+            <span id="last-text">⚡ last maintenance:</span> <span id="lastUpdate">—</span>
+        </div>
+    </div>
+
+    <!-- Modal podglądu/edycji -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <h2 class="modal-title" id="modalTitle">Entry details</h2>
+            
+            <div class="detail-grid" id="modalContent">
+                <!-- Dynamic content -->
+            </div>
+            
+            <div class="modal-buttons" id="modalButtons">
+                <!-- Dynamic buttons -->
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        const API_URL = 'save.php';
+        
+        let records = [];
+        let currentLang = 'en';
+        let translations = {};
+        
+        // Zmienne do sortowania
+        let sortField = 'date';
+        let sortDirection = 'desc';
+        
+        // Zmienne do edycji
+        let currentEditIndex = -1;
+        let isEditMode = false;
+
+        // Elementy DOM
+        const printerNameInput = document.getElementById('printerName');
+        const hoursInput = document.getElementById('hoursCount');
+        const notes = document.getElementById('notes');
+        const charCounter = document.getElementById('charCounter');
+        const langSelect = document.getElementById('langSelect');
+        const exportBtn = document.getElementById('exportBtn');
+        const importBtn = document.getElementById('importBtn');
+        const fileInput = document.getElementById('fileInput');
+        const modal = document.getElementById('detailModal');
+        const modalContent = document.getElementById('modalContent');
+        const modalButtons = document.getElementById('modalButtons');
+        const modalClose = document.getElementById('modalClose');
+        
+        // Checkboxy konserwacji
+        const lubeXYCheck = document.getElementById('lubeXY');
+        const lubeZCheck = document.getElementById('lubeZ');
+        const extruderCleanCheck = document.getElementById('extruderClean');
+        const filterChangeCheck = document.getElementById('filterChange');
+        const fanCleanCheck = document.getElementById('fanClean');
+        const cutterChangeCheck = document.getElementById('cutterChange');
+        const wiperPadCheck = document.getElementById('wiperPad');
+        
+        // Checkboxy kalibracji
+        const motorNoiseCheck = document.getElementById('motorNoise');
+        const vibrationCompCheck = document.getElementById('vibrationComp');
+        const autoBedLevelCheck = document.getElementById('autoBedLevel');
+        const highTempBedCheck = document.getElementById('highTempBed');
+        
+        const addEntryBtn = document.getElementById('addEntryBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const historyBody = document.getElementById('historyBody');
+        const lastUpdateSpan = document.getElementById('lastUpdate');
+        const notification = document.getElementById('notification');
+
+        // Licznik znaków dla notes
+        notes.addEventListener('input', function() {
+            const len = this.value.length;
+            charCounter.textContent = len + '/500';
+            charCounter.classList.remove('warning', 'danger');
+            if (len > 400) {
+                charCounter.classList.add('warning');
+            }
+            if (len > 480) {
+                charCounter.classList.add('danger');
+            }
+        });
+
+        function showNotification(message, isError = false) {
+            notification.textContent = message;
+            notification.classList.add('show');
+            if (isError) {
+                notification.classList.add('error');
+            } else {
+                notification.classList.remove('error');
+            }
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function escapeHtml(unsafe) {
+            if (unsafe == null) return '';
+            return String(unsafe)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function formatDate() {
+            const d = new Date();
+            return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+        }
+
+        // Funkcja sortowania
+        function sortTable(field) {
+            if (sortField === field) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortField = field;
+                sortDirection = field === 'date' ? 'desc' : 'asc';
+            }
+            
+            updateSortIcons();
+            renderTable();
+        }
+
+        // Aktualizacja ikonek sortowania
+        function updateSortIcons() {
+            const sortIcons = document.querySelectorAll('[id^="sort-"]');
+            sortIcons.forEach(icon => {
+                icon.textContent = '↕️';
+            });
+            
+            const currentIcon = document.getElementById(`sort-${sortField}`);
+            if (currentIcon) {
+                currentIcon.textContent = sortDirection === 'asc' ? '↑' : '↓';
+            }
+        }
+
+        // Funkcja porównująca do sortowania
+        function compareValues(a, b, field) {
+            let valA = a[field];
+            let valB = b[field];
+            
+            if (typeof valA === 'boolean') {
+                valA = valA ? 1 : 0;
+                valB = valB ? 1 : 0;
+            }
+            
+            if (field === 'hours') {
+                valA = parseInt(valA) || 0;
+                valB = parseInt(valB) || 0;
+            }
+            
+            if (field === 'date') {
+                const parseDate = (dateStr) => {
+                    const [day, month, year, time] = dateStr.split(/[. ]/);
+                    const [hours, minutes] = time.split(':');
+                    return new Date(year, month-1, day, hours, minutes).getTime();
+                };
+                
+                try {
+                    valA = parseDate(valA);
+                    valB = parseDate(valB);
+                } catch (e) {
+                    valA = 0;
+                    valB = 0;
+                }
+            }
+            
+            if (typeof valA === 'string' && typeof valB === 'string') {
+                valA = valA.toLowerCase();
+                valB = valB.toLowerCase();
+            }
+            
+            if (valA < valB) return -1;
+            if (valA > valB) return 1;
+            return 0;
+        }
+
+        // Rozpocznij edycję z poziomu tabeli
+        function startEditFromTable(index, event) {
+            event.stopPropagation();
+            currentEditIndex = index;
+            isEditMode = true;
+            showEditModal(records[index]);
+        }
+
+        // Pokaż modal w trybie edycji
+        function showEditModal(entry) {
+            const t = translations;
+            
+            let notesHtml = `<textarea class="detail-input" id="edit-notes" maxlength="500" style="width:100%; min-height:100px; border-radius:20px;">${escapeHtml(entry.notes || '')}</textarea>`;
+            
+            modalContent.innerHTML = `
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.printerLabel || 'Printer'}</div>
+                    <div class="detail-value">
+                        <input type="text" id="edit-printerName" class="detail-input" value="${escapeHtml(entry.printerName || '')}">
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.thDate || 'Date'}</div>
+                    <div class="detail-value">${escapeHtml(entry.date) || '—'}</div>
+                </div>
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.hoursLabel || 'Hours'}</div>
+                    <div class="detail-value">
+                        <input type="number" id="edit-hours" class="detail-input" value="${escapeHtml(entry.hours || '0')}" min="0" step="1">
+                    </div>
+                </div>
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.xyLabel || 'X/Y Lubrication'}</div>
+                    <div class="detail-value detail-checkbox">
+                        <input type="checkbox" id="edit-xy" ${entry.xy ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.zLabel || 'Z Lubrication'}</div>
+                    <div class="detail-value detail-checkbox">
+                        <input type="checkbox" id="edit-z" ${entry.z ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.extruderLabel || 'Extruder Cleaning'}</div>
+                    <div class="detail-value detail-checkbox">
+                        <input type="checkbox" id="edit-extruder" ${entry.extruder ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.filterLabel || 'Filter Replacement'}</div>
+                    <div class="detail-value detail-checkbox">
+                        <input type="checkbox" id="edit-filter" ${entry.filter ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.fanLabel || 'Fans Cleaning'}</div>
+                    <div class="detail-value detail-checkbox">
+                        <input type="checkbox" id="edit-fan" ${entry.fan ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.cutterLabel || 'Toolhead Cutter'}</div>
+                    <div class="detail-value detail-checkbox">
+                        <input type="checkbox" id="edit-cutter" ${entry.cutter ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.wiperLabel || 'Nozzle Wiping Pad'}</div>
+                    <div class="detail-value detail-checkbox">
+                        <input type="checkbox" id="edit-wiper" ${entry.wiper ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.motorLabel || 'Motor Noise Cancellation'}</div>
+                    <div class="detail-value detail-checkbox">
+                        <input type="checkbox" id="edit-motorNoise" ${entry.motorNoise ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.vibrationLabel || 'Vibration Compensation'}</div>
+                    <div class="detail-value detail-checkbox">
+                        <input type="checkbox" id="edit-vibrationComp" ${entry.vibrationComp ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.ablLabel || 'Auto Bed Leveling'}</div>
+                    <div class="detail-value detail-checkbox">
+                        <input type="checkbox" id="edit-autoBedLevel" ${entry.autoBedLevel ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="detail-item edit-mode">
+                    <div class="detail-label">${t.hightempLabel || 'High-Temperature Bed Leveling'}</div>
+                    <div class="detail-value detail-checkbox">
+                        <input type="checkbox" id="edit-highTempBed" ${entry.highTempBed ? 'checked' : ''}>
+                    </div>
+                </div>
+                <div class="detail-item detail-full edit-mode">
+                    <div class="detail-label">${t.notesLabel || 'Notes'}</div>
+                    ${notesHtml}
+                </div>
+            `;
+            
+            modalButtons.innerHTML = `
+                <button class="modal-btn save" onclick="saveEdit()">${t.save || 'Save'} 💾</button>
+                <button class="modal-btn cancel" onclick="closeModal()">${t.cancel || 'Cancel'} ✕</button>
+            `;
+            
+            document.getElementById('modalTitle').textContent = t.editEntry || 'Edit entry';
+            modal.classList.add('show');
+        }
+
+        // Zapisz edycję
+        async function saveEdit() {
+            if (currentEditIndex === -1) return;
+            
+            const updatedRecord = {
+                printerName: document.getElementById('edit-printerName').value.trim(),
+                hours: document.getElementById('edit-hours').value.trim(),
+                notes: document.getElementById('edit-notes').value.trim() || '',
+                xy: document.getElementById('edit-xy').checked,
+                z: document.getElementById('edit-z').checked,
+                extruder: document.getElementById('edit-extruder').checked,
+                filter: document.getElementById('edit-filter').checked,
+                fan: document.getElementById('edit-fan').checked,
+                cutter: document.getElementById('edit-cutter').checked,
+                wiper: document.getElementById('edit-wiper').checked,
+                motorNoise: document.getElementById('edit-motorNoise').checked,
+                vibrationComp: document.getElementById('edit-vibrationComp').checked,
+                autoBedLevel: document.getElementById('edit-autoBedLevel').checked,
+                highTempBed: document.getElementById('edit-highTempBed').checked,
+                date: records[currentEditIndex].date // Zachowaj oryginalną datę
+            };
+            
+            // Walidacja
+            if (!updatedRecord.printerName) {
+                alert(translations.nameRequired || 'Enter printer name.');
+                return;
+            }
+            if (!updatedRecord.hours) {
+                alert(translations.hoursRequired || 'Enter hours.');
+                return;
+            }
+            
+            records[currentEditIndex] = updatedRecord;
+            const saved = await saveData();
+            
+            if (saved) {
+                renderTable();
+                closeModal();
+                showNotification(translations.entryUpdated || 'Entry updated!');
+            } else {
+                showNotification(translations.saveError || 'Error saving data', true);
+            }
+        }
+
+        // Pokaż modal z detaliami wpisu (tryb podglądu)
+        function showEntryDetails(entry, index) {
+            const t = translations;
+            currentEditIndex = index;
+            isEditMode = false;
+            
+            let notesHtml = entry.notes ? 
+                `<div class="detail-value notes">${escapeHtml(entry.notes)}</div>` : 
+                `<div class="detail-value">—</div>`;
+            
+            modalContent.innerHTML = `
+                <div class="detail-item">
+                    <div class="detail-label">${t.printerLabel || 'Printer'}</div>
+                    <div class="detail-value">${escapeHtml(entry.printerName) || '—'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.thDate || 'Date'}</div>
+                    <div class="detail-value">${escapeHtml(entry.date) || '—'}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.hoursLabel || 'Hours'}</div>
+                    <div class="detail-value">${escapeHtml(entry.hours) || '0'} h</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.xyLabel || 'X/Y Lubrication'}</div>
+                    <div class="detail-value">
+                        <span class="status-badge ${entry.xy ? 'success' : 'warning'}">
+                            ${entry.xy ? t.done || '✅ Done' : t.notDone || '➖ Not done'}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.zLabel || 'Z Lubrication'}</div>
+                    <div class="detail-value">
+                        <span class="status-badge ${entry.z ? 'success' : 'warning'}">
+                            ${entry.z ? t.done || '✅ Done' : t.notDone || '➖ Not done'}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.extruderLabel || 'Extruder Cleaning'}</div>
+                    <div class="detail-value">
+                        <span class="status-badge ${entry.extruder ? 'success' : 'warning'}">
+                            ${entry.extruder ? t.done || '✅ Done' : t.notDone || '➖ Not done'}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.filterLabel || 'Filter Replacement'}</div>
+                    <div class="detail-value">
+                        <span class="status-badge ${entry.filter ? 'success' : 'warning'}">
+                            ${entry.filter ? t.done || '✅ Done' : t.notDone || '➖ Not done'}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.fanLabel || 'Fans Cleaning'}</div>
+                    <div class="detail-value">
+                        <span class="status-badge ${entry.fan ? 'success' : 'warning'}">
+                            ${entry.fan ? t.done || '✅ Done' : t.notDone || '➖ Not done'}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.cutterLabel || 'Toolhead Cutter'}</div>
+                    <div class="detail-value">
+                        <span class="status-badge ${entry.cutter ? 'success' : 'warning'}">
+                            ${entry.cutter ? t.done || '✅ Done' : t.notDone || '➖ Not done'}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.wiperLabel || 'Nozzle Wiping Pad'}</div>
+                    <div class="detail-value">
+                        <span class="status-badge ${entry.wiper ? 'success' : 'warning'}">
+                            ${entry.wiper ? t.done || '✅ Done' : t.notDone || '➖ Not done'}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.motorLabel || 'Motor Noise Cancellation'}</div>
+                    <div class="detail-value">
+                        <span class="status-badge ${entry.motorNoise ? 'success' : 'warning'}">
+                            ${entry.motorNoise ? t.done || '✅ Done' : t.notDone || '➖ Not done'}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.vibrationLabel || 'Vibration Compensation'}</div>
+                    <div class="detail-value">
+                        <span class="status-badge ${entry.vibrationComp ? 'success' : 'warning'}">
+                            ${entry.vibrationComp ? t.done || '✅ Done' : t.notDone || '➖ Not done'}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.ablLabel || 'Auto Bed Leveling'}</div>
+                    <div class="detail-value">
+                        <span class="status-badge ${entry.autoBedLevel ? 'success' : 'warning'}">
+                            ${entry.autoBedLevel ? t.done || '✅ Done' : t.notDone || '➖ Not done'}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">${t.hightempLabel || 'High-Temperature Bed Leveling'}</div>
+                    <div class="detail-value">
+                        <span class="status-badge ${entry.highTempBed ? 'success' : 'warning'}">
+                            ${entry.highTempBed ? t.done || '✅ Done' : t.notDone || '➖ Not done'}
+                        </span>
+                    </div>
+                </div>
+                <div class="detail-item detail-full">
+                    <div class="detail-label">${t.notesLabel || 'Notes'}</div>
+                    ${notesHtml}
+                </div>
+            `;
+            
+            modalButtons.innerHTML = `
+                <button class="modal-btn edit" onclick="startEdit(${index})">${t.edit || 'Edit'} ✏️</button>
+                <button class="modal-btn cancel" onclick="closeModal()">${t.close || 'Close'} ✕</button>
+            `;
+            
+            document.getElementById('modalTitle').textContent = t.entryDetails || 'Entry details';
+            modal.classList.add('show');
+        }
+
+        // Rozpocznij edycję z poziomu podglądu
+        function startEdit(index) {
+            currentEditIndex = index;
+            isEditMode = true;
+            showEditModal(records[index]);
+        }
+
+        // Zamknij modal
+        function closeModal() {
+            modal.classList.remove('show');
+            currentEditIndex = -1;
+            isEditMode = false;
+        }
+
+        // EKSPORT - pobierz plik JSON
+        function exportToFile() {
+            const dataStr = JSON.stringify(records, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `maintenance_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification(translations.exportSuccess || 'Exported successfully!');
+        }
+
+        // IMPORT - wybierz plik
+        function importFromFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (Array.isArray(imported)) {
+                        records = imported;
+                        saveData().then(() => {
+                            renderTable();
+                            showNotification(translations.importSuccess || 'Imported successfully!');
+                        });
+                    } else {
+                        showNotification(translations.importError || 'Invalid file format', true);
+                    }
+                } catch (error) {
+                    showNotification(translations.importError || 'Invalid file format', true);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Wczytaj tłumaczenia
+        async function loadTranslations(lang) {
+            try {
+                const response = await fetch(`lang_${lang}.json`);
+                if (response.ok) {
+                    translations = await response.json();
+                    updateUILanguage();
+                }
+            } catch (error) {
+                console.error('Error loading translations:', error);
+            }
+        }
+
+        function updateUILanguage() {
+            const t = translations;
+            
+            document.getElementById('subhead-text').textContent = t.subhead || 'Comprehensive 3D printers maintenance log';
+            document.getElementById('printer-label').textContent = t.printerLabel || '🖨️ Printer name';
+            document.getElementById('hours-label').textContent = t.hoursLabel || '⏱️ Hours (print time)';
+            
+            document.getElementById('maintenance-title').textContent = t.maintenanceTitle || '🔧 Maintenance';
+            document.getElementById('calibration-title').textContent = t.calibrationTitle || '⚙️ Calibration';
+            document.getElementById('notes-label').textContent = t.notesLabel || '📝 Notes (max 500 characters)';
+            
+            document.getElementById('xy-label').innerHTML = `${t.xyLabel || '⚙️ X/Y Lubrication'} <span>${t.xyDesc || 'linear axes'}</span>`;
+            document.getElementById('z-label').innerHTML = `${t.zLabel || '🔼 Z Lubrication'} <span>${t.zDesc || 'screws/rails'}</span>`;
+            document.getElementById('extruder-label').innerHTML = `${t.extruderLabel || '🧹 Extruder Cleaning'} <span>${t.extruderDesc || 'clean extruder gears'}</span>`;
+            document.getElementById('filter-label').innerHTML = `${t.filterLabel || '🔄 Filter Replacement'} <span>${t.filterDesc || 'HEPA/carbon filter'}</span>`;
+            document.getElementById('fan-label').innerHTML = `${t.fanLabel || '🌬️ Fans Cleaning'} <span>${t.fanDesc || 'part cooling & aux'}</span>`;
+            document.getElementById('cutter-label').innerHTML = `${t.cutterLabel || '✂️ Toolhead Cutter'} <span>${t.cutterDesc || 'filament cutter blade'}</span>`;
+            document.getElementById('wiper-label').innerHTML = `${t.wiperLabel || '🧽 Nozzle Wiping Pad'} <span>${t.wiperDesc || 'replace silicone pad'}</span>`;
+            
+            document.getElementById('motor-label').innerHTML = `${t.motorLabel || '🔇 Motor Noise Cancellation'} <span>${t.motorDesc || 'reduce motor noise'}</span>`;
+            document.getElementById('vibration-label').innerHTML = `${t.vibrationLabel || '📳 Vibration Compensation'} <span>${t.vibrationDesc || 'input shaping'}</span>`;
+            document.getElementById('abl-label').innerHTML = `${t.ablLabel || '📏 Auto Bed Leveling'} <span>${t.ablDesc || 'mesh leveling'}</span>`;
+            document.getElementById('hightemp-label').innerHTML = `${t.hightempLabel || '🔥 High-Temperature Bed Leveling'} <span>${t.hightempDesc || 'for high temp printing'}</span>`;
+            
+            document.getElementById('clear-text').textContent = t.clearText || 'Clear fields';
+            document.getElementById('add-text').textContent = t.addText || 'Add entry';
+            document.getElementById('history-title').textContent = t.historyTitle || '📋 Maintenance history';
+            document.getElementById('clear-history-text').textContent = t.clearHistoryText || 'clear all history';
+            
+            document.getElementById('th-printer').innerHTML = `${t.thPrinter || 'Printer'} <span class="sort-icon" id="sort-printerName">↕️</span>`;
+            document.getElementById('th-date').innerHTML = `${t.thDate || 'Date'} <span class="sort-icon" id="sort-date">↕️</span>`;
+            document.getElementById('th-hours').innerHTML = `${t.thHours || 'Hours'} <span class="sort-icon" id="sort-hours">↕️</span>`;
+            document.getElementById('th-xy').innerHTML = `${t.thXy || 'X/Y'} <span class="sort-icon" id="sort-xy">↕️</span>`;
+            document.getElementById('th-z').innerHTML = `${t.thZ || 'Z'} <span class="sort-icon" id="sort-z">↕️</span>`;
+            document.getElementById('th-extruder').innerHTML = `${t.thExtruder || 'Extruder'} <span class="sort-icon" id="sort-extruder">↕️</span>`;
+            document.getElementById('th-filter').innerHTML = `${t.thFilter || 'Filter'} <span class="sort-icon" id="sort-filter">↕️</span>`;
+            document.getElementById('th-fan').innerHTML = `${t.thFan || 'Fans'} <span class="sort-icon" id="sort-fan">↕️</span>`;
+            document.getElementById('th-cutter').innerHTML = `${t.thCutter || 'Cutter'} <span class="sort-icon" id="sort-cutter">↕️</span>`;
+            document.getElementById('th-wiper').innerHTML = `${t.thWiper || 'Wiper'} <span class="sort-icon" id="sort-wiper">↕️</span>`;
+            document.getElementById('th-motor').innerHTML = `${t.thMotor || 'Motor'} <span class="sort-icon" id="sort-motorNoise">↕️</span>`;
+            document.getElementById('th-vibration').innerHTML = `${t.thVibration || 'Vibration'} <span class="sort-icon" id="sort-vibrationComp">↕️</span>`;
+            document.getElementById('th-abl').innerHTML = `${t.thAbl || 'ABL'} <span class="sort-icon" id="sort-autoBedLevel">↕️</span>`;
+            document.getElementById('th-hightemp').innerHTML = `${t.thHighTemp || 'High-Temp'} <span class="sort-icon" id="sort-highTempBed">↕️</span>`;
+            document.getElementById('th-notes').innerHTML = `${t.thNotes || 'Notes'} <span class="sort-icon" id="sort-notes">↕️</span>`;
+            document.getElementById('th-actions').textContent = t.thActions || 'Actions';
+            
+            document.getElementById('last-text').textContent = t.lastText || '⚡ last maintenance:';
+            
+            exportBtn.title = t.exportTitle || 'Export to JSON';
+            importBtn.title = t.importTitle || 'Import from JSON';
+            
+            updateSortIcons();
+            renderTable();
+        }
+
+        // Wczytaj dane
+        async function loadData() {
+            try {
+                const response = await fetch(API_URL + '?get=1&t=' + Date.now());
+                if (response.ok) {
+                    const data = await response.json();
+                    records = Array.isArray(data) ? data : [];
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+                records = [];
+            }
+            renderTable();
+        }
+
+        // Zapisz dane
+        async function saveData() {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(records)
+                });
+                
+                if (response.ok) {
+                    return true;
+                } else {
+                    const text = await response.text();
+                    console.error('Server error:', text);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error saving:', error);
+                return false;
+            }
+        }
+
+        function renderTable() {
+            const t = translations;
+
+            if (!records || records.length === 0) {
+                historyBody.innerHTML = `<tr class="empty-row"><td colspan="16">${t.emptyHistory || '📭 No records.'}</td></tr>`;
+                lastUpdateSpan.textContent = '—';
+                return;
+            }
+
+            const sorted = [...records].sort((a, b) => {
+                const result = compareValues(a, b, sortField);
+                return sortDirection === 'asc' ? result : -result;
+            });
+
+            let html = '';
+            for (let i = 0; i < sorted.length; i++) {
+                const rec = sorted[i];
+                const originalIndex = records.findIndex(r => r.date === rec.date);
+                
+                const notesShort = rec.notes ? 
+                    (rec.notes.length > 20 ? rec.notes.substring(0, 17) + '...' : rec.notes) : 
+                    '—';
+                
+                html += `<tr onclick="showEntryDetails(records[${originalIndex}], ${originalIndex})">
+                    <td><strong>${escapeHtml(rec.printerName) || '—'}</strong></td>
+                    <td>${escapeHtml(rec.date) || ''}</td>
+                    <td><span class="badge">${escapeHtml(rec.hours) || '0'} h</span></td>
+                    <td><span class="badge" style="${!rec.xy ? 'opacity:0.5;' : ''}">${rec.xy ? '✅' : '➖'}</span></td>
+                    <td><span class="badge-z" style="${!rec.z ? 'opacity:0.5;' : ''}">${rec.z ? '✅' : '➖'}</span></td>
+                    <td><span class="badge-purple" style="${!rec.extruder ? 'opacity:0.5;' : ''}">${rec.extruder ? '✅' : '➖'}</span></td>
+                    <td><span class="badge-blue" style="${!rec.filter ? 'opacity:0.5;' : ''}">${rec.filter ? '✅' : '➖'}</span></td>
+                    <td><span class="badge-orange" style="${!rec.fan ? 'opacity:0.5;' : ''}">${rec.fan ? '✅' : '➖'}</span></td>
+                    <td><span class="badge-purple" style="${!rec.cutter ? 'opacity:0.5;' : ''}">${rec.cutter ? '✅' : '➖'}</span></td>
+                    <td><span class="badge-blue" style="${!rec.wiper ? 'opacity:0.5;' : ''}">${rec.wiper ? '✅' : '➖'}</span></td>
+                    <td><span class="badge-green" style="${!rec.motorNoise ? 'opacity:0.5;' : ''}">${rec.motorNoise ? '✅' : '➖'}</span></td>
+                    <td><span class="badge-orange" style="${!rec.vibrationComp ? 'opacity:0.5;' : ''}">${rec.vibrationComp ? '✅' : '➖'}</span></td>
+                    <td><span class="badge-purple" style="${!rec.autoBedLevel ? 'opacity:0.5;' : ''}">${rec.autoBedLevel ? '✅' : '➖'}</span></td>
+                    <td><span class="badge-blue" style="${!rec.highTempBed ? 'opacity:0.5;' : ''}">${rec.highTempBed ? '✅' : '➖'}</span></td>
+                    <td><span class="badge" style="max-width: 120px; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(notesShort)}</span></td>
+                    <td onclick="event.stopPropagation()">
+                        <button class="action-btn edit" onclick="startEditFromTable(${originalIndex}, event)" title="${t.edit || 'Edit'}">✏️</button>
+                        <button class="action-btn delete" onclick="deleteEntry(${originalIndex}, event)" title="${t.delete || 'Delete'}">🗑️</button>
+                    </td>
+                </tr>`;
+            }
+
+            historyBody.innerHTML = html;
+            lastUpdateSpan.textContent = sorted.length > 0 ? sorted[0].date : '—';
+        }
+
+        function validateInputs() {
+            const t = translations;
+            const name = printerNameInput.value.trim();
+            const hours = hoursInput.value.trim();
+            
+            if (name === '') {
+                alert(t.nameRequired || 'Enter printer name.');
+                return false;
+            }
+            if (hours === '') {
+                alert(t.hoursRequired || 'Enter hours.');
+                return false;
+            }
+            const hoursNum = Number(hours);
+            if (isNaN(hoursNum) || hoursNum < 0) {
+                alert(t.hoursInvalid || 'Hours must be a non-negative number.');
+                return false;
+            }
+            return true;
+        }
+
+        async function addEntry() {
+            if (!validateInputs()) return;
+
+            const newRecord = {
+                printerName: printerNameInput.value.trim(),
+                hours: hoursInput.value.trim(),
+                notes: notes.value.trim() || '',
+                xy: lubeXYCheck.checked,
+                z: lubeZCheck.checked,
+                extruder: extruderCleanCheck.checked,
+                filter: filterChangeCheck.checked,
+                fan: fanCleanCheck.checked,
+                cutter: cutterChangeCheck.checked,
+                wiper: wiperPadCheck.checked,
+                motorNoise: motorNoiseCheck.checked,
+                vibrationComp: vibrationCompCheck.checked,
+                autoBedLevel: autoBedLevelCheck.checked,
+                highTempBed: highTempBedCheck.checked,
+                date: formatDate()
+            };
+
+            records.push(newRecord);
+            const saved = await saveData();
+
+            if (saved) {
+                renderTable();
+                
+                [lubeXYCheck, lubeZCheck, extruderCleanCheck, filterChangeCheck, 
+                 fanCleanCheck, cutterChangeCheck, wiperPadCheck,
+                 motorNoiseCheck, vibrationCompCheck, autoBedLevelCheck, highTempBedCheck].forEach(cb => cb.checked = false);
+                notes.value = '';
+                charCounter.textContent = '0/500';
+                
+                printerNameInput.focus();
+                showNotification(translations.entryAdded || 'Entry added!');
+            } else {
+                records = records.filter(r => r.date !== newRecord.date);
+                showNotification(translations.saveError || 'Error saving data', true);
+            }
+        }
+
+        function clearForm() {
+            printerNameInput.value = '';
+            hoursInput.value = '';
+            notes.value = '';
+            charCounter.textContent = '0/500';
+            [lubeXYCheck, lubeZCheck, extruderCleanCheck, filterChangeCheck, 
+             fanCleanCheck, cutterChangeCheck, wiperPadCheck,
+             motorNoiseCheck, vibrationCompCheck, autoBedLevelCheck, highTempBedCheck].forEach(cb => cb.checked = false);
+            printerNameInput.focus();
+        }
+
+        async function clearHistory() {
+            if (records.length === 0) return;
+            const t = translations;
+            if (confirm(t.confirmClearAll || 'Clear entire maintenance history?')) {
+                records = [];
+                const saved = await saveData();
+                if (saved) {
+                    renderTable();
+                    showNotification(t.historyCleared || 'History cleared!');
+                } else {
+                    showNotification(t.saveError || 'Error saving data', true);
+                }
+            }
+        }
+
+        async function deleteEntry(index, event) {
+            if (event) event.stopPropagation();
+            
+            const t = translations;
+            if (confirm(t.confirmDelete || 'Delete this entry?')) {
+                records.splice(index, 1);
+                const saved = await saveData();
+                if (saved) {
+                    renderTable();
+                    showNotification(t.entryDeleted || 'Entry deleted!');
+                } else {
+                    showNotification(t.saveError || 'Error saving data', true);
+                }
+            }
+        }
+
+        // Globalne funkcje dla onclick
+        window.deleteEntry = deleteEntry;
+        window.showEntryDetails = showEntryDetails;
+        window.sortTable = sortTable;
+        window.startEditFromTable = startEditFromTable;
+        window.startEdit = startEdit;
+        window.saveEdit = saveEdit;
+        window.closeModal = closeModal;
+
+        // Event listeners
+        langSelect.addEventListener('change', async (e) => {
+            currentLang = e.target.value;
+            localStorage.setItem('printer_language', currentLang);
+            await loadTranslations(currentLang);
+        });
+
+        addEntryBtn.addEventListener('click', addEntry);
+        clearBtn.addEventListener('click', clearForm);
+        clearHistoryBtn.addEventListener('click', clearHistory);
+        
+        exportBtn.addEventListener('click', exportToFile);
+        importBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                importFromFile(file);
+            }
+            fileInput.value = '';
+        });
+
+        modalClose.addEventListener('click', closeModal);
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Start
+        const savedLang = localStorage.getItem('printer_language') || 'en';
+        currentLang = savedLang;
+        langSelect.value = savedLang;
+        loadTranslations(currentLang);
+        loadData();
+    </script>
+</body>
+</html>
