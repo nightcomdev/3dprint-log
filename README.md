@@ -38,3 +38,9 @@ You can create your own language by creating `json` file and adding line to `ind
 ![Screenshot of a main page](/images/sc1.png)
 
 ![Screenshot of a specific maintaenance from history](/images/sc2.png)
+
+
+# Support
+If you like my work and you want to support it, consider buying me a coffee. Thank you!
+
+<a href="https://www.buymeacoffee.com/nightcom" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
