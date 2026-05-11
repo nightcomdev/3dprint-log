@@ -14,14 +14,14 @@ You can create your own language by creating `json` file and adding line to `ind
     "printerLabel": "🖨️ Название принтера",
     "hoursLabel": "⏱️ Часы (время печати)",
 ```
-4. Edit file `index.html` and find line
+3. Edit file `index.html` and find line
 ```
    <select class="lang-select" id="langSelect">
     <option value="en">English 🇬🇧</option>
     <option value="pl">Polski 🇵🇱</option>
     </select>
 ```    
-6. Add ```<option value="ru">Русский 🇷🇺</option>``` before ```</select>``` like this:
+4. Add ```<option value="ru">Русский 🇷🇺</option>``` before ```</select>``` like this:
 ```
    <select class="lang-select" id="langSelect">
     <option value="en">English 🇬🇧</option>
